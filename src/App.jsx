@@ -1,8 +1,12 @@
 import MainContainer from "./MainContainer.jsx";
+import {Canvas} from "@react-three/fiber";
 
 
 function App() {
-  return <MainContainer />
+
+  return <Canvas>
+      <MainContainer />
+  </Canvas>
 }
 
 export default App
