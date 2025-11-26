@@ -1,7 +1,8 @@
+import MainContainer from "./MainContainer.jsx";
 
 
 function App() {
-  return <div>Hi!</div>
+  return <MainContainer />
 }
 
 export default App
