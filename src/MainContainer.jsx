@@ -12,12 +12,13 @@ export default function MainContainer() {
     return (<>
         <color attach={'background'} args={['black']} />
         <AnimatedStars />
-        {/*<directionalLight ref={directionalLightRef} position={[0, 0, 10]}*/}
-        {/*    intensity={3}*/}
-        {/*    //color={0xff0000}*/}
-        {/*/>*/}
-        {/*<directionalLight ref={directionalLightRef2} position={[0, 0, -10]} />*/}
-        <ambientLight />
+        <directionalLight ref={directionalLightRef} position={[0, 0, 10]}
+            intensity={3} castShadow
+
+            //color={0xff0000}
+        />
+        <directionalLight ref={directionalLightRef2} position={[0, 0, -10]} castShadow />
+        {/*<ambientLight />*/}
         <Earth displacementScale={0.1} />
     </>)
 }

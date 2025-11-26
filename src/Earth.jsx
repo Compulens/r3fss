@@ -1,8 +1,9 @@
 import { useTexture } from "@react-three/drei";
-import {useRef} from "react";
-import {useFrame} from "@react-three/fiber";
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import Moon from "./Moon";
 
-export default function Earth({ displacementScale }) {
+export default function Earth({ displacementScale = 0.2 }) {
     const earthRef = useRef(null);
 
     const [
@@ -18,19 +19,25 @@ export default function Earth({ displacementScale }) {
     ]);
 
     useFrame(() => {
-        earthRef.current.rotation.y += .002;
-    })
+        if (earthRef.current) {
+            earthRef.current.rotation.y += 0.002;
+        }
+    });
 
     return (
-        <mesh ref={earthRef}>
-            <sphereGeometry args={[1, 32, 32]} />
-            <meshPhongMaterial
-                map={earthTexture}
-                normalMap={earthNormalMap}
-                specularMap={earthSpecularMap}
-                displacementMap={earthDisplacementMap}
-                displacementScale={displacementScale}
-            />
-        </mesh>
-    )
+        <group>
+            <mesh receiveShadow ref={earthRef}>
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshPhongMaterial
+                    map={earthTexture}
+                    normalMap={earthNormalMap}
+                    specularMap={earthSpecularMap}
+                    displacementMap={earthDisplacementMap}
+                    displacementScale={displacementScale}
+                    shininess={10}
+                />
+            </mesh>
+            <Moon />
+        </group>
+    );
 }
