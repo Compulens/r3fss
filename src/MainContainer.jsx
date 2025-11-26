@@ -18,6 +18,6 @@ export default function MainContainer() {
         {/*/>*/}
         {/*<directionalLight ref={directionalLightRef2} position={[0, 0, -10]} />*/}
         <ambientLight />
-        <Earth displacementScale={.15} />
+        <Earth displacementScale={0.1} />
     </>)
 }

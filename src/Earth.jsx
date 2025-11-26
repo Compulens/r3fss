@@ -28,7 +28,7 @@ export default function Earth({ displacementScale }) {
                 map={earthTexture}
                 normalMap={earthNormalMap}
                 specularMap={earthSpecularMap}
-                displacementMap={earthNormalMap}
+                displacementMap={earthDisplacementMap}
                 displacementScale={displacementScale}
             />
         </mesh>
