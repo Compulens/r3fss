@@ -1,6 +1,6 @@
 import { useHelper } from "@react-three/drei";
 import AnimatedStars from "./AnimatedStars.jsx";
-import Earth from "./Earth.jsx";
+import Earth from "./scenes/earth/Earth.jsx";
 import { useRef } from "react";
 import * as THREE from "three";
 

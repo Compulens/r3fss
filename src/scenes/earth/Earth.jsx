@@ -1,7 +1,8 @@
 import { useTexture } from "@react-three/drei";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import Moon from "./Moon";
+import Moon from "./Moon.jsx";
+import ISS from "./ISS.jsx";
 
 export default function Earth({ displacementScale = 0.2 }) {
     const earthRef = useRef(null);
@@ -37,6 +38,7 @@ export default function Earth({ displacementScale = 0.2 }) {
                     shininess={10}
                 />
             </mesh>
+            <ISS />
             <Moon />
         </group>
     );
