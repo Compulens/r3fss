@@ -7,7 +7,7 @@ export default function Moon() {
     const moonRef = useRef(null);
 
     const [moonTexture] = useTexture([
-        '/assets/2k_moon.jpg',
+        import.meta.env.BASE_URL + 'assets/2k_moon.jpg',
     ]);
 
     useFrame(({ clock }) => {

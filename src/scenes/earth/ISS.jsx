@@ -7,12 +7,12 @@ const X_AXIS = 2;
 export default function ISS(factory, deps) {
     const issRef = useRef(null);
     const memoizedISS = useMemo(() => {
-        return useGLTF('/assets/ISSModel/ISS_stationary.gltf')
+        return useGLTF(import.meta.env.BASE_URL + 'assets/ISSModel/ISS_stationary.gltf')
     })
     
     useFrame(({ clock }) => {
         // Orbit rotation
-        const SPEED = .5;
+        const SPEED = .2;
         issRef.current.position.x = Math.sin(clock.getElapsedTime() * SPEED) * X_AXIS;
         issRef.current.position.z = Math.cos(clock.getElapsedTime() * SPEED) * X_AXIS;
     });

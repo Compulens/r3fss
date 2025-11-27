@@ -13,10 +13,10 @@ export default function Earth({ displacementScale = 0.2 }) {
         earthSpecularMap,
         earthDisplacementMap,
     ] = useTexture([
-        '/assets/earth_day.jpg',
-        '/assets/earth_normal.jpg',
-        '/assets/earth_specular.jpg',
-        '/assets/earth_displacement.jpg',
+        import.meta.env.BASE_URL + 'assets/earth_day.jpg',
+        import.meta.env.BASE_URL + 'assets/earth_normal.jpg',
+        import.meta.env.BASE_URL + 'assets/earth_specular.jpg',
+        import.meta.env.BASE_URL + 'assets/earth_displacement.jpg',
     ]);
 
     useFrame(() => {
