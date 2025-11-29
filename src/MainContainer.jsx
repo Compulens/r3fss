@@ -1,5 +1,5 @@
 import AnimatedStars from "./AnimatedStars.jsx";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from 'three';
 
@@ -14,18 +14,49 @@ import Uranus from "./scenes/uranus/Uranus.jsx";
 import Neptune from "./scenes/neptune/Neptune.jsx";
 
 // --- HELPER COMPONENT ---
-// This wraps a planet and rotates it around the center (0,0,0)
-const PlanetOrbit = ({ speed, initialOffset = 0, children }) => {
-    const orbitRef = useRef(null);
+const EllipticalOrbit = ({
+                             xRadius,
+                             zRadius,
+                             speed,
+                             initialOffset = 0,
+                             showOrbitPath = true, // Defaulted to true now
+                             orbitColor = "#555555", // Added a prop for color control
+                             children
+                         }) => {
+    const planetRef = useRef(null);
+    const angleRef = useRef(initialOffset);
 
     useFrame((state, delta) => {
-        orbitRef.current.rotation.y += speed * delta;
+        angleRef.current += speed * delta * 0.2;
+
+        const x = xRadius * Math.cos(angleRef.current);
+        const z = zRadius * Math.sin(angleRef.current);
+
+        if (planetRef.current) {
+            planetRef.current.position.set(x, 0, z);
+        }
     });
 
+    const orbitGeometry = useMemo(() => {
+        // Create the ellipse path
+        const curve = new THREE.EllipseCurve(0, 0, xRadius, zRadius, 0, 2 * Math.PI, false, 0);
+        // 64 points is usually enough for a smooth circle/ellipse
+        const points = curve.getPoints(64);
+        return new THREE.BufferGeometry().setFromPoints(points);
+    }, [xRadius, zRadius]);
+
     return (
-        <group ref={orbitRef} rotation={[0, initialOffset, 0]}>
-            {children}
-        </group>
+        <>
+            <group ref={planetRef}>
+                {children}
+            </group>
+
+            {showOrbitPath && (
+                <line geometry={orbitGeometry} rotation={[-Math.PI / 2, 0, 0]}>
+                    <lineBasicMaterial attach="material" color={orbitColor} transparent opacity={0.3} />
+                </line>
+            )}
+        </>
     );
 };
 
@@ -39,53 +70,45 @@ export default function MainContainer() {
 
             {/* --- ORBITAL SYSTEM --- */}
 
-            {/* MERCURY: Fastest orbit (speed 4), starts at angle 0 */}
-            <PlanetOrbit speed={4.0} initialOffset={0}>
-                <Mercury position={[10, 0, 0]} radius={0.4} />
-            </PlanetOrbit>
+            {/* MERCURY */}
+            <EllipticalOrbit xRadius={10} zRadius={8} speed={4.0} initialOffset={0} showOrbitPath>
+                <Mercury radius={0.4} />
+            </EllipticalOrbit>
 
-            {/* VENUS: Slower (speed 3), starts at 180 degrees (Math.PI) */}
-            <PlanetOrbit speed={3.0} initialOffset={Math.PI}>
-                <Venus position={[15, 0, 0]} radius={0.9} />
-            </PlanetOrbit>
+            {/* VENUS */}
+            <EllipticalOrbit xRadius={15} zRadius={14} speed={3.0} initialOffset={Math.PI} showOrbitPath>
+                <Venus radius={0.9} />
+            </EllipticalOrbit>
 
-            {/* EARTH: Reference speed (2.0), random start angle */}
-            <PlanetOrbit speed={2.0} initialOffset={1}>
-                <Earth position={[20, 0, 0]} radius={1} displacementScale={0.1} />
+            {/* EARTH */}
+            <EllipticalOrbit xRadius={20} zRadius={18} speed={2.0} initialOffset={1} showOrbitPath>
+                <Earth radius={1} displacementScale={0.1} />
+            </EllipticalOrbit>
 
-                {/* Earth Trajectory Line
-                    Note: Since this ring is inside the rotating group, it spins WITH the earth.
-                    For a solid line, this is invisible, so it works fine. */}
-                <mesh rotation={[Math.PI / 2, 0, 0]}>
-                    <ringGeometry args={[19.8, 20.2, 128]} />
-                    <meshBasicMaterial color="#ffffff" transparent opacity={0.1} side={THREE.DoubleSide} />
-                </mesh>
-            </PlanetOrbit>
+            {/* MARS */}
+            <EllipticalOrbit xRadius={25} zRadius={22} speed={1.6} initialOffset={3.5} showOrbitPath>
+                <Mars radius={0.6} />
+            </EllipticalOrbit>
 
-            {/* MARS: Slower (1.6) */}
-            <PlanetOrbit speed={1.6} initialOffset={3.5}>
-                <Mars position={[25, 0, 0]} radius={0.6} />
-            </PlanetOrbit>
+            {/* JUPITER */}
+            <EllipticalOrbit xRadius={45} zRadius={40} speed={0.8} initialOffset={5} showOrbitPath>
+                <Jupiter radius={3.5} />
+            </EllipticalOrbit>
 
-            {/* JUPITER: Much slower (0.8) */}
-            <PlanetOrbit speed={0.8} initialOffset={5}>
-                <Jupiter position={[45, 0, 0]} radius={3.5} />
-            </PlanetOrbit>
+            {/* SATURN */}
+            <EllipticalOrbit xRadius={70} zRadius={60} speed={0.5} initialOffset={2} showOrbitPath>
+                <Saturn radius={3} />
+            </EllipticalOrbit>
 
-            {/* SATURN: (0.5) */}
-            <PlanetOrbit speed={0.5} initialOffset={2}>
-                <Saturn position={[70, 0, 0]} radius={3} />
-            </PlanetOrbit>
+            {/* URANUS */}
+            <EllipticalOrbit xRadius={90} zRadius={80} speed={0.3} initialOffset={4} showOrbitPath>
+                <Uranus radius={1.5} />
+            </EllipticalOrbit>
 
-            {/* URANUS: (0.3) */}
-            <PlanetOrbit speed={0.3} initialOffset={4}>
-                <Uranus position={[90, 0, 0]} radius={1.5} />
-            </PlanetOrbit>
-
-            {/* NEPTUNE: Slowest (0.2) */}
-            <PlanetOrbit speed={0.2} initialOffset={0.5}>
-                <Neptune position={[105, 0, 0]} radius={1.5} />
-            </PlanetOrbit>
+            {/* NEPTUNE */}
+            <EllipticalOrbit xRadius={105} zRadius={95} speed={0.2} initialOffset={0.5} showOrbitPath>
+                <Neptune radius={1.5} />
+            </EllipticalOrbit>
 
             <ambientLight intensity={0.1} />
             <pointLight position={[0, 0, 0]} intensity={2} decay={0} />

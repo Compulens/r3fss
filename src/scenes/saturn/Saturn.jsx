@@ -1,33 +1,38 @@
 import { useTexture } from "@react-three/drei";
 import { DoubleSide } from "three";
+import * as THREE from "three";
 
-export default function Saturn({ position, displacementScale, radius }) {
+export default function Saturn({ radius }) {
     const [saturnTexture, ringTexture] = useTexture([
         import.meta.env.BASE_URL + 'assets/2k_saturn.jpg',
         import.meta.env.BASE_URL + 'assets/2k_saturn_ring_alpha.png',
-    ])
+    ]);
 
     return (
-        <group position={position}>
+        // Rotate the whole group ~27 degrees on X (0.47 radians) to simulate axial tilt
+        <group rotation={[0.47, 0, 0]}>
+
             {/* 1. The Planet Sphere */}
-            <mesh>
+            <mesh castShadow receiveShadow>
                 <sphereGeometry args={[radius, 64, 64]} />
-                <meshPhongMaterial map={saturnTexture} displacementScale={displacementScale} />
+                <meshStandardMaterial map={saturnTexture} />
             </mesh>
 
             {/* 2. The Rings */}
-            <mesh rotation-x={-Math.PI / 2}>
-                {/* UPDATED ARGS:
-                   - Inner Radius: radius * 1.2 (Closer to planet surface)
-                   - Outer Radius: radius * 4.0 (Much larger extension outward)
-                   - Segments: 128 (Smoother edges for the larger size)
+            {/* rotation-x={-Math.PI / 2} lies the ring flat relative to the planet.
+                Because the parent group is tilted, the ring will appear tilted in the scene.
+            */}
+            <mesh rotation-x={-Math.PI / 2} castShadow receiveShadow>
+                {/* Inner Radius: 1.2 * radius (Gap between planet and ring)
+                   Outer Radius: 2.3 * radius (More realistic width than 4.0)
                 */}
-                <ringGeometry args={[radius * 1.2, radius * 4.0, 128]} />
-                <meshPhongMaterial
+                <ringGeometry args={[radius * 1.2, radius * 2.3, 128]} />
+                <meshStandardMaterial
                     map={ringTexture}
                     side={DoubleSide}
                     transparent={true}
-                    opacity={1.0} // Increased from 0.8 to 1.0 for maximum boldness
+                    opacity={1.0}
+                    roughness={0.4} // Adds a little light scattering
                 />
             </mesh>
         </group>
