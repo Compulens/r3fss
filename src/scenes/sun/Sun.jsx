@@ -12,7 +12,7 @@ export default function Sun() {
             <pointLight
                 ref={pointLightRef}
                 position={[0, 0, 0]}
-                intensity={8000} // Increased intensity for physical lights in recent Three.js
+                intensity={2222} // Increased intensity for physical lights in recent Three.js
                 decay={2}
                 distance={1000}
                 castShadow
@@ -20,11 +20,9 @@ export default function Sun() {
                 shadow-mapSize-height={1024}
             />
 
-            {/* 2. The Visual Sun */}
             <mesh position={[0, 0, 0]}>
                 <sphereGeometry args={[2.5, 32, 32]} />
                 <meshPhongMaterial map={sunTexture} />
-                {/*<meshBasicMaterial color="#FFD700" />*/}
             </mesh>
 
             {/* Glow effect helper around sun */}

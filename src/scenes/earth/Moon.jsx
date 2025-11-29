@@ -1,7 +1,7 @@
 import { useTexture } from "@react-three/drei";
 import {useRef} from "react";
 import {useFrame} from "@react-three/fiber";
-const X_AXIS = 4;
+const X_AXIS = 2;
 
 export default function Moon() {
     const moonRef = useRef(null);

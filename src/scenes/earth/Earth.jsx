@@ -4,7 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import Moon from "./Moon.jsx";
 import ISS from "./ISS.jsx";
 
-export default function Earth({ displacementScale = 0.2, position }) {
+export default function Earth({ displacementScale = 0.2, position, radius }) {
     const earthRef = useRef(null);
 
     const [
@@ -28,7 +28,7 @@ export default function Earth({ displacementScale = 0.2, position }) {
     return (
         <group position={position}>
             <mesh receiveShadow ref={earthRef}>
-                <sphereGeometry args={[1, 64, 64]} />
+                <sphereGeometry args={[radius, 64, 64]} />
                 <meshPhongMaterial
                     map={earthTexture}
                     normalMap={earthNormalMap}
