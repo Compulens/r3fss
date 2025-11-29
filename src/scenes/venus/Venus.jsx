@@ -13,7 +13,7 @@ export default function Venus({ position, displacementScale, radius }) {
                 <meshPhongMaterial map={venusSurface} displacementScale={displacementScale} />
             </mesh>
             <mesh>
-                <sphereGeometry args={[1.02, 64, 64]} />
+                <sphereGeometry args={[radius * 1.1, 64, 64]} />
                 <meshPhongMaterial
                     map={venusAtmosphere}
                     transparent={true}

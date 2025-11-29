@@ -13,64 +13,81 @@ import Saturn from "./scenes/saturn/Saturn.jsx";
 import Uranus from "./scenes/uranus/Uranus.jsx";
 import Neptune from "./scenes/neptune/Neptune.jsx";
 
-export default function MainContainer() {
-    const orbitGroupRef = useRef(null);
+// --- HELPER COMPONENT ---
+// This wraps a planet and rotates it around the center (0,0,0)
+const PlanetOrbit = ({ speed, initialOffset = 0, children }) => {
+    const orbitRef = useRef(null);
 
     useFrame((state, delta) => {
-        // Rotates the entire solar system slowly around the sun
-        orbitGroupRef.current.rotation.y += 0.05 * delta;
+        orbitRef.current.rotation.y += speed * delta;
     });
 
+    return (
+        <group ref={orbitRef} rotation={[0, initialOffset, 0]}>
+            {children}
+        </group>
+    );
+};
+
+export default function MainContainer() {
     return (
         <>
             <color attach={'background'} args={['black']} />
             <AnimatedStars />
 
-            {/* SUN: Scale depends on your Sun component, usually it's the largest */}
             <Sun />
 
             {/* --- ORBITAL SYSTEM --- */}
-            <group ref={orbitGroupRef} rotation={[0, 0, 0]}>
 
-                {/* 1. MERCURY - Smallest, closest */}
+            {/* MERCURY: Fastest orbit (speed 4), starts at angle 0 */}
+            <PlanetOrbit speed={4.0} initialOffset={0}>
                 <Mercury position={[10, 0, 0]} radius={0.4} />
+            </PlanetOrbit>
 
-                {/* 2. VENUS - Similar size to Earth */}
+            {/* VENUS: Slower (speed 3), starts at 180 degrees (Math.PI) */}
+            <PlanetOrbit speed={3.0} initialOffset={Math.PI}>
                 <Venus position={[15, 0, 0]} radius={0.9} />
+            </PlanetOrbit>
 
-                {/* 3. EARTH - The reference point (Radius 1) */}
-                <Earth
-                    position={[20, 0, 0]}
-                    radius={1}
-                    displacementScale={0.1}
-                />
+            {/* EARTH: Reference speed (2.0), random start angle */}
+            <PlanetOrbit speed={2.0} initialOffset={1}>
+                <Earth position={[20, 0, 0]} radius={1} displacementScale={0.1} />
 
-                {/* Earth Trajectory Line (Updated to match Earth pos 20) */}
+                {/* Earth Trajectory Line
+                    Note: Since this ring is inside the rotating group, it spins WITH the earth.
+                    For a solid line, this is invisible, so it works fine. */}
                 <mesh rotation={[Math.PI / 2, 0, 0]}>
                     <ringGeometry args={[19.8, 20.2, 128]} />
                     <meshBasicMaterial color="#ffffff" transparent opacity={0.1} side={THREE.DoubleSide} />
                 </mesh>
+            </PlanetOrbit>
 
-                {/* 4. MARS - Smaller than Earth ("The Red Planet") */}
+            {/* MARS: Slower (1.6) */}
+            <PlanetOrbit speed={1.6} initialOffset={3.5}>
                 <Mars position={[25, 0, 0]} radius={0.6} />
+            </PlanetOrbit>
 
-                {/* 5. JUPITER - The Giant (Massive jump in size and distance) */}
+            {/* JUPITER: Much slower (0.8) */}
+            <PlanetOrbit speed={0.8} initialOffset={5}>
                 <Jupiter position={[45, 0, 0]} radius={3.5} />
+            </PlanetOrbit>
 
-                {/* 6. SATURN - Large, plus needs extra space for Rings */}
+            {/* SATURN: (0.5) */}
+            <PlanetOrbit speed={0.5} initialOffset={2}>
                 <Saturn position={[70, 0, 0]} radius={3} />
+            </PlanetOrbit>
 
-                {/* 7. URANUS - Ice Giant */}
+            {/* URANUS: (0.3) */}
+            <PlanetOrbit speed={0.3} initialOffset={4}>
                 <Uranus position={[90, 0, 0]} radius={1.5} />
+            </PlanetOrbit>
 
-                {/* 8. NEPTUNE - Ice Giant */}
+            {/* NEPTUNE: Slowest (0.2) */}
+            <PlanetOrbit speed={0.2} initialOffset={0.5}>
                 <Neptune position={[105, 0, 0]} radius={1.5} />
+            </PlanetOrbit>
 
-            </group>
-
-            {/* Ambient light adjusted for better contrast in space */}
             <ambientLight intensity={0.1} />
-            {/* Point light from the Sun (Essential for shadows/phases) */}
             <pointLight position={[0, 0, 0]} intensity={2} decay={0} />
         </>
     );

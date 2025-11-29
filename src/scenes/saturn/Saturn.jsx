@@ -16,15 +16,18 @@ export default function Saturn({ position, displacementScale, radius }) {
             </mesh>
 
             {/* 2. The Rings */}
-            {/* We rotate the mesh -90deg on X to make the ring lie flat */}
             <mesh rotation-x={-Math.PI / 2}>
-                {/* args: [innerRadius, outerRadius, segments] */}
-                <ringGeometry args={[1.4, 2.4, 64]} />
+                {/* UPDATED ARGS:
+                   - Inner Radius: radius * 1.2 (Closer to planet surface)
+                   - Outer Radius: radius * 4.0 (Much larger extension outward)
+                   - Segments: 128 (Smoother edges for the larger size)
+                */}
+                <ringGeometry args={[radius * 1.2, radius * 4.0, 128]} />
                 <meshPhongMaterial
                     map={ringTexture}
-                    side={DoubleSide} // Important: renders both top and bottom of the ring
+                    side={DoubleSide}
                     transparent={true}
-                    opacity={0.8}
+                    opacity={1.0} // Increased from 0.8 to 1.0 for maximum boldness
                 />
             </mesh>
         </group>
